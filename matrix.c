@@ -8,6 +8,10 @@ uint8_t available_address[MATRIX_ROWS];
 
 /* matrix state(1:on, 0:off) */
 matrix_row_t matrix[MATRIX_ROWS];
+matrix_row_t matrix_debouncing[MATRIX_ROWS];
+
+#define DEBOUNCE 5
+uint8_t debouncing = DEBOUNCE;
 
 void matrix_init(void) {
     i2c_init();
@@ -45,10 +49,30 @@ uint8_t matrix_scan(void) {
             if(result) {
                 buffer[0] = buffer[1] = 0x00;
             }
+
+            matrix_row_t cols =  buffer[1] << 8 | buffer[0];
             //end read_cols(i)
-            matrix[i] = buffer[1] << 8 | buffer[0];
+
+            if(matrix_debouncing[i] != cols) {
+                matrix_debouncing[i] = cols;
+                debouncing = DEBOUNCE;
+            }
+
+            //matrix[i] = buffer[1] << 8 | buffer[0];
         } else {
-            matrix[i] = 0x0000;
+            //matrix[i] = 0x0000;
+            matrix_debouncing[i] = 0x0000;
+        }
+
+    }
+
+    if(debouncing) {
+        if(--debouncing) {
+            wait_ms(1);
+        } else {
+            for(uint8_t i=0; i<MATRIX_ROWS; i++) {
+                matrix[i] = matrix_debouncing[i];
+            }
         }
     }
     return 1;

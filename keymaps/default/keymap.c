@@ -39,6 +39,7 @@ enum custom_keycodes {
 #define KC_RESET RESET
 #define KC_B_BK LALT(KC_LEFT) //ブラウザバック
 #define KC_ADJUST MO(_ADJUST)
+#define KC_S_ADJ  LT(_ADJUST, KC_SPC)
 #define ____ KC_TRNS
 #define KC_MOUSE MO(_MOUSE)
 #define KC_ARROW MO(_ARROW)
@@ -51,7 +52,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_EUCALYN] = LAYOUT( \
           LALT_T(KC_Q), KC_MINUS, KC_COMM, KC_DOT, KC_W,       KC_M, KC_Y, KC_K, KC_R, RALT_T(KC_P),
           LCTL_T(KC_A), KC_O, KC_E, KC_I, KC_U,       KC_N, KC_H, KC_J, KC_L, RCTL_T(KC_G),
-          LSFT_T(KC_Z), KC_X, KC_C, KC_V, KC_F,       KC_S, KC_T, KC_D, KC_B, RSFT_T(KC_ENT),
+          LSFT_T(KC_Z), KC_X, KC_C, KC_V, KC_F,       KC_S, KC_T, KC_D, KC_B, RSFT_T(KC_Q),
           LCTL_T(KC_ESC),KC_LGUI, LT(_ARROW, KC_F10), LT(_LOWER, KC_TAB), LT(_LOWER, KC_SPC),    LT(_RAISE, KC_ENT), KC_BSPACE, LCTL(KC_SPC), KC_APP, KC_RGUI
 ),
 
@@ -84,10 +85,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 [_RAISE] = LAYOUT_kc( \
-            LALT, ESC,  TILD, PLUS, LCBR,    RCBR, COLN, DQUO, QUES, PIPE,
-            LCTL, NO,   GRV,  EQL,  LBRC,    RBRC, SCLN, QUOT, SLSH, BSLS,
-            LSFT, ____, ____, ____, ____,    ____, ____, ____, ____, ENT,
-            ESC,  LGUI, ____, ____, ADJUST,  ____, ____, ____, ____, ____
+            LALT, UNDS, LABK, RABK, LCBR,    RCBR, COLN, DQUO, QUES, PIPE,
+            LCTL, ESC,  GRV,  EQL,  LBRC,    RBRC, SCLN, QUOT, SLSH, BSLS,
+            LSFT, ____, TILD, PLUS, ____,    ____, ____, ____, ____, ENT,
+            ESC,  LGUI, ____, ____, S_ADJ,  ____, ____, ____, ____, ____
 ),
 
 [_LOWER_J] = LAYOUT( \

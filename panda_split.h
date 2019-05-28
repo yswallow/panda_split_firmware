@@ -25,7 +25,9 @@
  * The second converts the arguments into a two-dimensional array which
  * represents the switch matrix.
  */
-#define LAYOUT( kc01,  kc02,  kc03,  kc04,  kc05,     kc06, kc07, kc08, kc09, kc10, \
+#ifndef LAYOUT
+#define LAYOUT( \
+           kc01, kc02, kc03, kc04, kc05,    kc06, kc07, kc08, kc09, kc10, \
            kc11, kc12, kc13, kc14, kc15,    kc16, kc17, kc18, kc19, kc20, \
            kc21, kc22, kc23, kc24, kc25,    kc26, kc27, kc28, kc29, kc30, \
            kc31, kc32, kc33, kc34, kc35,    kc36, kc37, kc38, kc39, kc40 \
@@ -36,6 +38,7 @@
         {   kc08, kc09, kc10, kc07, kc06, KC_NO, KC_NO, KC_NO,      kc26, kc27, kc28, kc29, kc30, KC_NO, KC_NO, KC_NO }, \
         {   kc20, kc19, kc18, kc17, kc16, KC_NO, KC_NO, KC_NO,      kc36, kc37, kc38, kc39, kc40, KC_NO, KC_NO, KC_NO }, \
 }
+#endif
 /*
 { \
         {   kc03, kc04, kc05, kc02, kc01, KC_NO, KC_NO, KC_NO,      kc21, kc22, kc23, kc24, kc25, KC_NO, KC_NO, KC_NO }, \

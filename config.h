@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define PRODUCT         panda_split
 #define DESCRIPTION     A custom keyboard
 
-#define CATERINA_BOOTLOADER
+//#define CATERINA_BOOTLOADER
 /* key matrix size */
 #define MATRIX_ROWS 4
 #define MATRIX_COLS 16
@@ -50,7 +50,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MATRIX_SCAN_TIMEOUT 0x00FF
 /* COL2ROW, ROW2COL*/
 //#define DIODE_DIRECTION COL2ROW
-
+#define QMK_LED C7
 /*
  * Split Keyboard specific options, make sure you have 'SPLIT_KEYBOARD = yes' in your rules.mk, and define SOFT_SERIAL_PIN.
  */

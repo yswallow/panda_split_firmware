@@ -1,5 +1,6 @@
 # project specific files
-SRC =	matrix.c
+SRC =	matrix.c \
+        i2c_master.c
 
 # MCU name
 #MCU = at90usb1286

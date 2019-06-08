@@ -26,9 +26,9 @@
 #undef MATRIX_SLAVE_ADDRESS
 #define MATRIX_SLAVE_ADDRESS { 0x40, 0x42, 0x44, 0x46, 0x48, 0x4A, 0x4C, 0x4E }
 
-#define LED_ADDRESS 0x4E
-#define LED_PORT 1 // 0->A, 1->B
-#define NUMLOCK_LED (1<<0) //B0
+#define LED_ADDRESS 0x4A
+#define LED_PORT 0 // 0->A, 1->B
+#define NUMLOCK_LED (1<<7) //A7
 #define CAPSLOCK_LED 0 //None
 #define SCROLLLOCK_LED 0 //None
 
@@ -50,7 +50,7 @@
 #define MAGIC_KEY_LAYER3 N
 #define MAGIC_KEY_LAYER0_ALT1 DELETE
 
-#define LAYOUT_WITH_KEYPAD( \
+#define LAYOUT_WITH_CHEESE( \
             L01, L02, L03, L04, L05,    R01, R02, R03, R04, R05,  \
             L06, L07, L08, L09, L10,    R06, R07, R08, R09, R10,  \
             L11, L12, L13, L14, L15,    R11, R12, R13, R14, R15,  \
@@ -65,7 +65,13 @@
                 J03, J04, \
                 J05,      \
                 J06, J07, \
-            J08, J09, J10 \
+            J08, J09, J10, \
+            \
+                    U02, \
+               U03, U04, \
+                    U05, \
+                    U07, \
+            U08, U09, U10 \
 ) \
 { \
             {   L03, L04, L05, L02, L01, KC_NO, KC_NO, KC_NO,      L11, L12, L13, L14, L15, KC_NO, KC_NO, KC_NO }, \
@@ -75,7 +81,7 @@
             {   A03, A04, A05, A02, A01, KC_NO, KC_NO, KC_NO,      A11, A12, A13, A14, A15, KC_NO, KC_NO, KC_NO }, \
             {   A10, A09, A08, A07, A06, KC_NO, KC_NO, KC_NO,      A16, A17, A18, A19, A20, KC_NO, KC_NO, KC_NO }, \
             {   J09, J10, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,      J02, J01, J03, J05, J04, J07, J06, J08 }, \
-            {   KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,      KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO } \
+            {   U09, U10, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,      U02, KC_NO, U03, U05, U04, U07, KC_NO, U08 } \
 }
 
 #define LAYOUT( \

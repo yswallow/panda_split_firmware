@@ -49,21 +49,27 @@ enum custom_keycodes {
 #define KC_FDEL S(KC_DEL)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-  [_EUCALYN] = LAYOUT_WITH_KEYPAD( \
+  [_EUCALYN] = LAYOUT_WITH_CHEESE( \
         LALT_T(KC_Q), KC_MINUS, KC_COMM, KC_DOT, KC_W,      KC_M, KC_Y, KC_K, KC_R, RALT_T(KC_P),       
         LCTL_T(KC_A), KC_O, KC_E, KC_I, KC_U,               KC_N, KC_H, KC_J, KC_L, RCTL_T(KC_G),       
         LSFT_T(KC_Z), KC_X, KC_C, KC_V, KC_F,               KC_S, KC_T, KC_D, KC_B, RSFT_T(KC_Q),          
-        LCTL_T(KC_ESC),KC_LGUI, LT(_ARROW, KC_F10), LT(_LOWER, KC_TAB), LT(_LOWER, KC_SPC),    LT(_RAISE, KC_ENT), KC_BSPACE, LCTL(KC_SPC), KC_APP, KC_RGUI,
+        LCTL_T(KC_ESC),KC_LGUI, LT(_ARROW, KC_F10), LT(_ARROW, KC_TAB), LT(_LOWER, KC_SPC),    LT(_RAISE, KC_ENT), KC_BSPACE, LCTL(KC_SPC), KC_APP, KC_RGUI,
         \
         KC_P7, KC_P8, KC_P9, KC_NLCK, KC_DELETE,
-        KC_P4, KC_P5, KC_P6, KC_TAB, LCTL(KC_W),
-        KC_P1, KC_P2, KC_P3, KC_LSFT, KC_RGUI,
+        KC_P4, KC_P5, KC_P6, KC_TAB, KC_BSPACE,
+        KC_P1, KC_P2, KC_P3, KC_LSFT, LCTL(KC_W),
         KC_P0, KC_PDOT, KC_ENT, KC_ESC, KC_LCTL,
         \
         KC_DELETE, KC_BSPACE,
         KC_RALT, KC_ENT,
         KC_RCTL,
         KC_UP, KC_RSFT,
+        KC_LEFT, KC_DOWN, KC_RIGHT,
+        \
+        KC_BSPACE,
+        KC_LALT, KC_DELETE,
+        KC_ENT,
+        KC_UP,
         KC_LEFT, KC_DOWN, KC_RIGHT
         \
 ),

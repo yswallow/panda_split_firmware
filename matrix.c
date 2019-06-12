@@ -3,6 +3,8 @@
 #include "wait.h"
 #include "matrix.h"
 #include <print.h>
+#include "quantum.h"
+
 
 uint8_t slave_address[MATRIX_ROWS] = MATRIX_SLAVE_ADDRESS;
 
@@ -17,6 +19,7 @@ uint8_t debouncing = DEBOUNCE;
 
 void matrix_init(void) {
     uint8_t buffer[2] = {0x00, 0x00};
+    //bool device_available = false;
     i2c_init();
     for(short i=0; i<MATRIX_ROWS; i++) {
         if( 0 == i2c_start(slave_address[i], MATRIX_INIT_TIMEOUT) ) {
@@ -43,16 +46,21 @@ void matrix_init(void) {
             buffer[1] = 0x00;
             i2c_transmit(LED_ADDRESS, buffer, 2, MATRIX_INIT_TIMEOUT);
             #endif
-            
+            //device_available = true;
             i2c_stop();
         } else {
             available_address[i] = 0x00;
         }
     }
+    /*if(! device_available) {
+        SEND_STRING("I2C slave device not found.");
+    }*/
 }
 
 uint8_t matrix_scan(void) {
     uint8_t buffer[2] = {0x00, 0x00};
+    bool device_available = false;
+    
     for(uint8_t i=0; i<MATRIX_ROWS; i++) {
         if(available_address[i]) {
             i2c_status_t result = 0;
@@ -65,6 +73,8 @@ uint8_t matrix_scan(void) {
             i2c_stop();
             if(result) {
                 buffer[0] = buffer[1] = 0x00;
+            } else {
+                device_available = true;
             }
 
             matrix_row_t cols =  buffer[1] << 8 | buffer[0];
@@ -82,7 +92,12 @@ uint8_t matrix_scan(void) {
         }
 
     }
-
+    
+    if(! device_available) {
+        SEND_STRING("I2C slave device not found.\t");
+        wait_ms(10000);
+    }
+    
     if(debouncing) {
         if(--debouncing) {
             wait_ms(1);

@@ -139,7 +139,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 [_ADJUST] = LAYOUT( \
-            DF(_QWERTY), ____, DF(_EUCALYN), ____, ____,    ____, ____, KC_PSCR, KC_VOLU, RESET,
+            DF(_QWERTY), ____, DF(_EUCALYN), ____, ____,    QMKBEST, ____, KC_PSCR, KC_VOLU, RESET,
             ____, ____, DF(_EUCALYN), ____, ____,           ____, DF(_QWERTY_J), KC_INS, KC_VOLD, ____,
             ____, ____, ____, ____, ____,                   ____, ____, ____, ____, ____,
             ____,   ____,  ____, ____,   ____,              ____,     ____,   ____,   ____,   ____

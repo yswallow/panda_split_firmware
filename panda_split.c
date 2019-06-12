@@ -42,6 +42,8 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
 
 void led_set_kb(uint8_t usb_led) {
   // put your keyboard LED indicator (ex: Caps Lock LED) toggling code here
+  
+  #ifdef LED_ADDRESS
   uint8_t buffer[2];
   
   buffer[0] = 0x14 + LED_PORT; // OLAT
@@ -76,6 +78,7 @@ void led_set_kb(uint8_t usb_led) {
   i2c_start(LED_ADDRESS, MATRIX_SCAN_TIMEOUT);
   i2c_transmit(LED_ADDRESS, buffer, 2, MATRIX_SCAN_TIMEOUT);
   i2c_stop();
+  #endif
   led_set_user(usb_led);
 }
 

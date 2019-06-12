@@ -66,15 +66,15 @@ void led_set_kb(uint8_t usb_led) {
   
   //void panda_led_set(uint8_t address, uint8_t port, uint8_t pin_number, bool led_state)
   #ifdef NUMLOCK_LED_ADDRESS
-    panda_led_set( NUMLOCK_LED_ADDRESS, NUMLOCK_LED_PORT, NUMLOCK_LED_PIN_NUMBER, (1 << USB_LED_NUM_LOCK) );
+    panda_led_set( NUMLOCK_LED_ADDRESS, NUMLOCK_LED_PORT, NUMLOCK_LED_PIN_NUMBER, usb_led & (1 << USB_LED_NUM_LOCK) );
   #endif
   
   #ifdef CAPSLOCK_LED_ADDRESS
-    panda_led_set( CAPSLOCK_LED_ADDRESS, CAPSLOCK_LED_PORT, CAPSLOCK_LED_PIN_NUMBER, (1 << USB_LED_CAPS_LOCK) );
+    panda_led_set( CAPSLOCK_LED_ADDRESS, CAPSLOCK_LED_PORT, CAPSLOCK_LED_PIN_NUMBER, usb_led & (1 << USB_LED_CAPS_LOCK) );
   #endif
   
   #ifdef SCROLLLOCK_LED_ADDRESS
-    panda_led_set( SCROLLLOCK_LED_ADDRESS, SCROLLLOCK_LED_PORT, SCROLLLOCK_LED_PIN_NUMBER, (1 << USB_LED_SCROLL_LOCK) );
+    panda_led_set( SCROLLLOCK_LED_ADDRESS, SCROLLLOCK_LED_PORT, SCROLLLOCK_LED_PIN_NUMBER, usb_led & (1 << USB_LED_SCROLL_LOCK) );
   #endif
     
   #endif

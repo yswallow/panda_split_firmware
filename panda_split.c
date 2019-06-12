@@ -40,44 +40,43 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
   return process_record_user(keycode, record);
 }
 
+inline void panda_led_set(uint8_t address, uint8_t port, uint8_t pin_number, bool led_state) {
+  uint8_t buffer[2];
+  
+  buffer[0] = 0x14 + port;
+  i2c_start(address, MATRIX_SCAN_TIMEOUT);
+  i2c_transmit(address, buffer, 1, MATRIX_SCAN_TIMEOUT);
+  i2c_receive(address, buffer, 1, MATRIX_SCAN_TIMEOUT);
+  if(led_state) {
+    buffer[1] = buffer[0] | (1<<pin_number);
+  } else {
+    buffer[1] = buffer[0] & ~(1<<pin_number);
+  }
+  
+  buffer[0] = 0x14 + port; 
+  
+  i2c_transmit(address, buffer, 2, MATRIX_SCAN_TIMEOUT);
+  i2c_stop();
+}
+ 
 void led_set_kb(uint8_t usb_led) {
   // put your keyboard LED indicator (ex: Caps Lock LED) toggling code here
   
-  #ifdef LED_ADDRESS
-  uint8_t buffer[2];
+  #ifdef PANDA_LED_ENABLE
   
-  buffer[0] = 0x14 + LED_PORT; // OLAT
-  i2c_start(LED_ADDRESS, MATRIX_SCAN_TIMEOUT);
-  i2c_transmit(LED_ADDRESS, buffer, 1, MATRIX_SCAN_TIMEOUT);
-  buffer[0] = 0x00;
-  i2c_receive(LED_ADDRESS, buffer, 1, MATRIX_SCAN_TIMEOUT);
-  i2c_stop();
+  //void panda_led_set(uint8_t address, uint8_t port, uint8_t pin_number, bool led_state)
+  #ifdef NUMLOCK_LED_ADDRESS
+    panda_led_set( NUMLOCK_LED_ADDRESS, NUMLOCK_LED_PORT, NUMLOCK_LED_PIN_NUMBER, (1 << USB_LED_NUM_LOCK) );
+  #endif
   
-  uint8_t state = buffer[0] & (NUMLOCK_LED | CAPSLOCK_LED | SCROLLLOCK_LED);
-  if (usb_led & (1 << USB_LED_NUM_LOCK)) {
-    // turn on
-    state |= NUMLOCK_LED;
-  } else {
-    state &= ~NUMLOCK_LED;
-  }
-
-  if (usb_led & (1 << USB_LED_CAPS_LOCK)) {
-    state |= CAPSLOCK_LED;
-  } else {
-    state &= ~CAPSLOCK_LED;
-  }
-
-  if (usb_led & (1 << USB_LED_SCROLL_LOCK)) {
-    state |= SCROLLLOCK_LED;
-  } else {
-    state &= ~SCROLLLOCK_LED;
-  }
+  #ifdef CAPSLOCK_LED_ADDRESS
+    panda_led_set( CAPSLOCK_LED_ADDRESS, CAPSLOCK_LED_PORT, CAPSLOCK_LED_PIN_NUMBER, (1 << USB_LED_CAPS_LOCK) );
+  #endif
   
-  buffer[0] = 0x14 + LED_PORT;
-  buffer[1] = state;
-  i2c_start(LED_ADDRESS, MATRIX_SCAN_TIMEOUT);
-  i2c_transmit(LED_ADDRESS, buffer, 2, MATRIX_SCAN_TIMEOUT);
-  i2c_stop();
+  #ifdef SCROLLLOCK_LED_ADDRESS
+    panda_led_set( SCROLLLOCK_LED_ADDRESS, SCROLLLOCK_LED_PORT, SCROLLLOCK_LED_PIN_NUMBER, (1 << USB_LED_SCROLL_LOCK) );
+  #endif
+    
   #endif
   led_set_user(usb_led);
 }

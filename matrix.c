@@ -17,6 +17,28 @@ matrix_row_t matrix_debouncing[MATRIX_ROWS];
 #define DEBOUNCE 5
 uint8_t debouncing = DEBOUNCE;
 
+void panda_led_init(uint8_t address, uint8_t port, uint8_t pin_number) {
+    uint8_t buffer[2];
+    i2c_start(address, MATRIX_INIT_TIMEOUT);
+    buffer[0] = 0x00 + port; // IODIR
+    
+    // read
+    i2c_transmit(address, buffer, 1, MATRIX_INIT_TIMEOUT);
+    i2c_receive(address, buffer, 1, MATRIX_INIT_TIMEOUT);
+    
+    // write
+    buffer[1] = buffer[0] & (~(1<<pin_number));
+    buffer[0] = 0x00 + port;
+    i2c_transmit(address, buffer, 2, MATRIX_INIT_TIMEOUT);
+      
+    /*      
+    buffer[0] = 0x14 + port; // OLAT
+    buffer[1] = 0x00;
+    i2c_transmit(address, buffer, 2, MATRIX_INIT_TIMEOUT);
+    */
+    i2c_stop();
+}
+
 void matrix_init(void) {
     uint8_t buffer[2] = {0x00, 0x00};
     //bool device_available = false;
@@ -35,23 +57,26 @@ void matrix_init(void) {
             i2c_transmit(slave_address[i], buffer, 2, MATRIX_INIT_TIMEOUT);
             buffer[0] = 0x03;
             i2c_transmit(slave_address[i], buffer, 2, MATRIX_INIT_TIMEOUT);
-            #ifdef LED_ADDRESS
-            if(LED_ADDRESS == slave_address[i]) {
-                buffer[0] = 0x00 + LED_PORT; // IODIR
-                buffer[1] = 0xFF & ( ~(NUMLOCK_LED | CAPSLOCK_LED | SCROLLLOCK_LED) );
-                i2c_transmit(LED_ADDRESS, buffer, 2, MATRIX_INIT_TIMEOUT);
-            }
             
-            buffer[0] = 0x14 + LED_PORT; // OLAT
-            buffer[1] = 0x00;
-            i2c_transmit(LED_ADDRESS, buffer, 2, MATRIX_INIT_TIMEOUT);
-            #endif
             //device_available = true;
             i2c_stop();
         } else {
             available_address[i] = 0x00;
         }
     }
+    
+    #ifdef PANDA_LED_ENABLE
+        #ifdef NUMLOCK_LED_ADDRESS
+            panda_led_init(NUMLOCK_LED_ADDRESS, NUMLOCK_LED_PORT, NUMLOCK_LED_PIN_NUMBER);
+        #endif
+        #ifdef CAPSLOCK_LED_ADDRESS
+            panda_led_init(CAPSLOCK_LED_ADDRESS, CAPSLOCK_LED_PORT, CAPSLOCK_LED_PIN_NUMBER);
+        #endif
+        #ifdef SCROLLLOCK_LED_ADDRESS
+            panda_led_init(SCROLLLOCK_LED_ADDRESS, SCROLLLOCK_LED_PORT, SCROLLLOCK_LED_PIN_NUMBER);
+        #endif
+    #endif
+    
     /*if(! device_available) {
         SEND_STRING("I2C slave device not found.");
     }*/

@@ -26,11 +26,12 @@
 #undef MATRIX_SLAVE_ADDRESS
 #define MATRIX_SLAVE_ADDRESS { 0x40, 0x42, 0x44, 0x46, 0x48, 0x4A, 0x4C, 0x4E }
 
-#define LED_ADDRESS 0x4A
-#define LED_PORT 0 // 0->A, 1->B
-#define NUMLOCK_LED (1<<7) //A7
-#define CAPSLOCK_LED 0 //None
-#define SCROLLLOCK_LED 0 //None
+#define PANDA_LED_ENABLE
+#define NUMLOCK_LED_ADDRESS 0x4A
+#define NUMLOCK_LED_PORT 0 // 0->A, 1->B
+#define NUMLOCK_LED_PIN_NUMBER 7 //A7
+//#define CAPSLOCK_LED_ADDRESS
+//#define SCROLLLOCK_LED_ADDRESS
 
 /* Mousekey config */
 #define MOUSEKEY_DELAY             100

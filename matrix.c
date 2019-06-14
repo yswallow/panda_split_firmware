@@ -4,10 +4,9 @@
 #include "matrix.h"
 #include <print.h>
 #include "quantum.h"
-
+#include "panda.h"
 
 uint8_t slave_address[MATRIX_ROWS] = MATRIX_SLAVE_ADDRESS;
-
 uint8_t available_address[MATRIX_ROWS];
 
 /* matrix state(1:on, 0:off) */
@@ -16,28 +15,6 @@ matrix_row_t matrix_debouncing[MATRIX_ROWS];
 
 #define DEBOUNCE 5
 uint8_t debouncing = DEBOUNCE;
-
-void panda_led_init(uint8_t address, uint8_t port, uint8_t pin_number) {
-    uint8_t buffer[2];
-    i2c_start(address, MATRIX_INIT_TIMEOUT);
-    buffer[0] = 0x00 + port; // IODIR
-    
-    // read
-    i2c_transmit(address, buffer, 1, MATRIX_INIT_TIMEOUT);
-    i2c_receive(address, buffer, 1, MATRIX_INIT_TIMEOUT);
-    
-    // write
-    buffer[1] = buffer[0] & (~(1<<pin_number));
-    buffer[0] = 0x00 + port;
-    i2c_transmit(address, buffer, 2, MATRIX_INIT_TIMEOUT);
-      
-    /*      
-    buffer[0] = 0x14 + port; // OLAT
-    buffer[1] = 0x00;
-    i2c_transmit(address, buffer, 2, MATRIX_INIT_TIMEOUT);
-    */
-    i2c_stop();
-}
 
 void matrix_init(void) {
     uint8_t buffer[2] = {0x00, 0x00};
@@ -75,11 +52,15 @@ void matrix_init(void) {
         #ifdef SCROLLLOCK_LED_ADDRESS
             panda_led_init(SCROLLLOCK_LED_ADDRESS, SCROLLLOCK_LED_PORT, SCROLLLOCK_LED_PIN_NUMBER);
         #endif
+        panda_led_init(PANDA_BLINK_LED_ADDRESS, 0, 7);
+        panda_led_set( PANDA_BLINK_LED_ADDRESS, 0, 7, true);
     #endif
     
     /*if(! device_available) {
         SEND_STRING("I2C slave device not found.");
     }*/
+    
+    matrix_init_kb();
 }
 
 uint8_t matrix_scan(void) {
@@ -132,6 +113,7 @@ uint8_t matrix_scan(void) {
             }
         }
     }
+    matrix_scan_kb();
     return 1;
 }
 

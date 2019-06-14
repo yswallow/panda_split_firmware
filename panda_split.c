@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "panda_split.h"
-#include "i2c_master.h"
+#include "panda.h"
+
 // Optional override functions below.
 // You can leave any or all of these undefined.
 // These are only required if you want to perform custom actions.
@@ -39,25 +40,6 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
 
   return process_record_user(keycode, record);
 }
-
-inline void panda_led_set(uint8_t address, uint8_t port, uint8_t pin_number, bool led_state) {
-  uint8_t buffer[2];
-  
-  buffer[0] = 0x14 + port;
-  i2c_start(address, MATRIX_SCAN_TIMEOUT);
-  i2c_transmit(address, buffer, 1, MATRIX_SCAN_TIMEOUT);
-  i2c_receive(address, buffer, 1, MATRIX_SCAN_TIMEOUT);
-  if(led_state) {
-    buffer[1] = buffer[0] | (1<<pin_number);
-  } else {
-    buffer[1] = buffer[0] & ~(1<<pin_number);
-  }
-  
-  buffer[0] = 0x14 + port; 
-  
-  i2c_transmit(address, buffer, 2, MATRIX_SCAN_TIMEOUT);
-  i2c_stop();
-}
  
 void led_set_kb(uint8_t usb_led) {
   // put your keyboard LED indicator (ex: Caps Lock LED) toggling code here
@@ -76,7 +58,7 @@ void led_set_kb(uint8_t usb_led) {
   #ifdef SCROLLLOCK_LED_ADDRESS
     panda_led_set( SCROLLLOCK_LED_ADDRESS, SCROLLLOCK_LED_PORT, SCROLLLOCK_LED_PIN_NUMBER, usb_led & (1 << USB_LED_SCROLL_LOCK) );
   #endif
-    
+
   #endif
   led_set_user(usb_led);
 }

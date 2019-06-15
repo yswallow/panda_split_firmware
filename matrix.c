@@ -16,11 +16,12 @@ matrix_row_t matrix_debouncing[MATRIX_ROWS];
 #define DEBOUNCE 5
 uint8_t debouncing = DEBOUNCE;
 
+bool device_unavailable_caution = true;
 void matrix_init(void) {
-    uint8_t buffer[2] = {0x00, 0x00};
     //bool device_available = false;
     i2c_init();
     for(short i=0; i<MATRIX_ROWS; i++) {
+        /*
         if( 0 == i2c_start(slave_address[i], MATRIX_INIT_TIMEOUT) ) {
             available_address[i] = slave_address[i];
             //デフォルトで入力 (IODIR is set(1) )
@@ -40,6 +41,10 @@ void matrix_init(void) {
         } else {
             available_address[i] = 0x00;
         }
+        */
+        if( (available_address[i] = panda_matrix_init(slave_address[i])) ) {
+            device_unavailable_caution = false;
+        }
     }
     
     #ifdef PANDA_LED_ENABLE
@@ -52,8 +57,6 @@ void matrix_init(void) {
         #ifdef SCROLLLOCK_LED_ADDRESS
             panda_led_init(SCROLLLOCK_LED_ADDRESS, SCROLLLOCK_LED_PORT, SCROLLLOCK_LED_PIN_NUMBER);
         #endif
-        panda_led_init(PANDA_BLINK_LED_ADDRESS, 0, 7);
-        panda_led_set( PANDA_BLINK_LED_ADDRESS, 0, 7, true);
     #endif
     
     /*if(! device_available) {
@@ -63,10 +66,11 @@ void matrix_init(void) {
     matrix_init_kb();
 }
 
+uint8_t scan_count = 20;
 uint8_t matrix_scan(void) {
     uint8_t buffer[2] = {0x00, 0x00};
-    bool device_available = false;
     
+    scan_count--;
     for(uint8_t i=0; i<MATRIX_ROWS; i++) {
         if(available_address[i]) {
             i2c_status_t result = 0;
@@ -79,10 +83,7 @@ uint8_t matrix_scan(void) {
             i2c_stop();
             if(result) {
                 buffer[0] = buffer[1] = 0x00;
-            } else {
-                device_available = true;
             }
-
             matrix_row_t cols =  buffer[1] << 8 | buffer[0];
             //end read_cols(i)
 
@@ -93,15 +94,33 @@ uint8_t matrix_scan(void) {
 
             //matrix[i] = buffer[1] << 8 | buffer[0];
         } else {
+            if(! scan_count) {
+                if( (available_address[i] = panda_matrix_init(slave_address[i])) ) {
+                    #ifdef PANDA_LED_ENABLE
+                        #ifdef NUMLOCK_LED_ADDRESS
+                            if(NUMLOCK_LED_ADDRESS == available_address[i])
+                                panda_led_init(NUMLOCK_LED_ADDRESS, NUMLOCK_LED_PORT, NUMLOCK_LED_PIN_NUMBER);
+                        #endif
+                        #ifdef CAPSLOCK_LED_ADDRESS
+                            if(CAPSLOCK_LED_ADDRESS == available_address[i])
+                                panda_led_init(CAPSLOCK_LED_ADDRESS, CAPSLOCK_LED_PORT, CAPSLOCK_LED_PIN_NUMBER);
+                        #endif
+                        #ifdef SCROLLLOCK_LED_ADDRESS
+                            if(SCROLLLOCK_LED_ADDRESS == available_address[i])
+                                panda_led_init(SCROLLLOCK_LED_ADDRESS, SCROLLLOCK_LED_PORT, SCROLLLOCK_LED_PIN_NUMBER);
+                        #endif
+                    #endif
+                }
+            }
             //matrix[i] = 0x0000;
             matrix_debouncing[i] = 0x0000;
         }
-
     }
     
-    if(! device_available) {
+    if(device_unavailable_caution) {
+        wait_ms(1000);
         SEND_STRING("I2C slave device not found.\t");
-        wait_ms(10000);
+        device_unavailable_caution = false;
     }
     
     if(debouncing) {
@@ -114,6 +133,10 @@ uint8_t matrix_scan(void) {
         }
     }
     matrix_scan_kb();
+    
+    if(! scan_count) {
+        scan_count = 20;
+    }
     return 1;
 }
 

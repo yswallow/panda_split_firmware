@@ -46,8 +46,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define MATRIX_COL_PINS { F1, F0, B0 }
 #define MATRIX_SLAVE_ADDRESS { 0x40, 0x42, 0x44, 0x46 }
 //#define UNUSED_PINS
-#define MATRIX_INIT_TIMEOUT 0x0FFF
-#define MATRIX_SCAN_TIMEOUT 0x00FF
+#define MATRIX_INIT_TIMEOUT 0x00FF //[ms]
+#define MATRIX_SCAN_TIMEOUT 10 //[ms]
 /* COL2ROW, ROW2COL*/
 //#define DIODE_DIRECTION COL2ROW
 #define QMK_LED C7
